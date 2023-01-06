@@ -1,7 +1,8 @@
 # Jetson Nano Ubuntu 18.04 Full Install
 
-Its assumed that the setup will done via an Ubuntu enabled PC with access to root privileges. The Jetson Nano setup will proceed in headless mode. Also, I recommend using an endurance SD Card UHS U3, V30 or higher, Class 10.
-
+This install guide assumes that the setup will done via an Ubuntu enabled PC with access to root privileges.\
+The Jetson Nano setup will proceed in headless mode.\
+I recommend using an endurance SD Card UHS U3, V30 or higher, Class 10.
 
 1. The official intro to the board can be found [here](https://developer.nvidia.com/embedded/learn/get-started-jetson-nano-devkit#intro).
 2. To power the Jetson Nano get a power supply that can delliver (at least) 3A at 5V that has:
@@ -476,7 +477,7 @@ Errors were encountered while processing:
 E: Sub-process /usr/bin/dpkg returned an error code (1)
 
 ```
-50. If that doesn't fix the problem do the following:
+50. If that doesn't fix the problem do the following, otherwise skip this step:
 
 ```bash
 sudo mv /var/lib/dpkg/info/ /var/lib/dpkg/backup/ # backup /var/lib/info/
@@ -505,16 +506,32 @@ sudo apt install nvidia-jetpack
 ```bash
 sudo apt install apt-utils
 ```
-54. Some software packages, especially the CUDA software, requires a gcc, g++ and clang version 8:
+54. Some software packages, especially the CUDA software, requires a gcc, g++ and clang version 8. However verion 8 and 9 of these toolchains have some bugs relating to the optimization options for arm achitectures (i.e. aarch64) like found in rpi and jetson nano. So, to get around various diffrent problems when compilation is required, all toolchains must be available:
 
 ```bash
-sudo apt install gcc-8 g++-8 clang-8
-sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 8
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+sudo apt-get update
+sudo apt-get install gcc-8 g++-8 clang-8 gcc-10 gcc-11 g++-10 g++-11 clang-10
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 7
-sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 8
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 8
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 10
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 11
 sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 7
+sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 8
+sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 10
+sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 11
 sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-8 8
+sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-10 10
 ```
+
+You can switch between the diffrent toolchain versions with:
+
+```bash
+sudo update-alternatives --config gcc
+sudo update-alternatives --config g++
+sudo update-alternatives --config clang
+```
+
 55. For ROS installs and other python3 packages install python3 pip:
 
 ```bash
@@ -565,3 +582,29 @@ cd jetson-fan-ctl/
 sudo ./install.sh
 ```
 4. See the github page for customization information [here](https://github.com/Pyrestone/jetson-fan-ctl)
+
+## Troubleshooting
+
+### SSH via Wi-Fi Slow or Not Working
+1. Turn off the Wi-Fi power saving mode:
+
+```bash
+iw dev wlan0 set power_save off
+```
+2. Make sure the firewall allows port 22 used by ssh:
+
+```bash
+sudo apt install ufw
+sudo ufw allow ssh
+sudo ufw allow 22
+sudo ufw enable
+sudo ufw status
+```
+
+## References
+
+1. [Getting Started with Jetson Nano Developer Kit](https://developer.nvidia.com/embedded/learn/get-started-jetson-nano-devkit#intro)
+2. [How to install g++ 10 on Ubuntu 18.04?](https://askubuntu.com/questions/1192955/how-to-install-g-10-on-ubuntu-18-04)
+2. [ROS crash on Raspberry Pi 4B with a very simple program](https://github.com/AutoxingTech/simple_publisher_crash)
+3. [Parameter description messages serialising to incorrect length on Arm](https://github.com/ros/dynamic_reconfigure/issues/176)
+4. [Updater raises std::bad_alloc sporadically on arm64 with O3 optimizations](https://github.com/ros/diagnostics/issues/119)
