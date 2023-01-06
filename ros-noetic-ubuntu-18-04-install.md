@@ -1,4 +1,4 @@
-# ROS Noetic Full Install on Jetson Nano with Ubuntu 18.04 (python3.6)
+# ROS Noetic Install on Jetson Nano with Ubuntu 18.04 (python3.6)
 
 The goal of this guide is to compile and install a fully working version of [ROS Noetic](http://wiki.ros.org/noetic) on the official Jetson Nano Ubuntu 18.04 distribution with native python 3.6 support.\
 The guide assumes that a clean and up-to-date Ubuntu 18.04 installation
