@@ -8,3 +8,4 @@
 4. [TODO - Ubuntu 20.04 ROS Noetic Install]()
 5. [TODO - Realsense D435i Ubuntu 18.04 - ROS Noetic Install]()
 6. [TODO - Realsense D435i Ubuntu 20.04 - ROS Noetic Install ]()
+7. [Jetson Nano Wi-Fi USB Dongle Install](jetson-wifi-dongle.md)
