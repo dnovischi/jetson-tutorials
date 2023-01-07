@@ -1,4 +1,4 @@
-# Jetson Configuration Guides
+# Jetson Configuration Tutorials
 
 ## Jetson Nano
 
