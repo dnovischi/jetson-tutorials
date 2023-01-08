@@ -8,9 +8,13 @@ TODO: Add description
 
 3. [ROS Noetic Install on Jetson Nano with Ubuntu 18.04 (python3.6)](ros-noetic-ubuntu-18-04-install.md)
 
-5. [TODO - Realsense D435i Ubuntu 18.04 - ROS Noetic Install]()
+5. [Realsense D435i Ubuntu 18.04 - ROS Noetic Install](realsense-notetic-ubuntu-18-04-install.md)
 
 7. [Jetson Nano Wi-Fi USB Dongle Install](jetson-wifi-dongle.md)
+
+## Contributions
+
+To contribute to this repository please follow the [Controbutions](CONTRIBUTING.md) guide.
 
 ## License
 
