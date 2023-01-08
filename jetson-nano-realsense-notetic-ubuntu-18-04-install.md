@@ -1,6 +1,6 @@
 # Realsense D435i ROS Noetic on Ubuntu 18.04 Installation
 
-In this tutorial I will describe the steps needed to fully install the Realsense D435i on the official Jetson Nano Ubuntu 18.04 distribution, with the latest Nvidia Jetpack installed based on a ROS Noetic deployment. If you don't have such a distribution installed, please complete the [Jetson Nano Ubuntu 18.04 Full Install](ubuntu-18-04-install.md) and the [ROS Noetic Install on Jetson Nano with Ubuntu 18.04 (python3.6)](ros-noetic-ubuntu-18-04-install.md) tutorials.
+In this tutorial I will describe the steps needed to fully install the Realsense D435i on the official Jetson Nano Ubuntu 18.04 distribution, with the latest Nvidia Jetpack installed based on a ROS Noetic deployment. If you don't have such a distribution installed, please complete the [Jetson Nano Ubuntu 18.04 Full Install](jetson-nano-ubuntu-18-04-install.md) and the [ROS Noetic Install on Jetson Nano with Ubuntu 18.04 (python3.6)](jetson-nano-ros-noetic-ubuntu-18-04-install.md) tutorials.
 
 The tutorial assumes that the aforementioned installs are done and details the steps to properly install, [librealsense](https://github.com/IntelRealSense/librealsense), [realsense-ros warpper](https://github.com/IntelRealSense/realsense-ros/tree/ros1-legacy) and the corresponding [realsense firmare](https://dev.intelrealsense.com/docs/firmware-releases).
 
