@@ -1,6 +1,6 @@
 # Realsense D435i ROS Noetic on Ubuntu 18.04 Installation
 
-In this tutorial I will describe the steps needed to fully install the Realsense D435i on the official Jetson Nano Ubuntu 18.04 distribution, with the latest Nvidia Jetpack installed based on a ROS Noetic deployment. If you don't have such a distribution installed, please complete the [Jetson Nano Ubuntu 18.04 Full Install](ubuntu-18-04-install.md) and the [ROS Noetic Install on Jetson Nano with Ubuntu 18.04 (python3.6)](ros-noetic-ubuntu-18-04-install.md) tutorials.
+In this tutorial I will describe the steps needed to fully install the Realsense D435i on the official Jetson Nano Ubuntu 18.04 distribution, with the latest Nvidia Jetpack installed based on a ROS Noetic deployment. If you don't have such a distribution installed, please complete the [Jetson Nano Ubuntu 18.04 Full Install](jetson-nano-ubuntu-18-04-install.md) and the [ROS Noetic Install on Jetson Nano with Ubuntu 18.04 (python3.6)](jetson-nano-ros-noetic-ubuntu-18-04-install.md) tutorials.
 
 The tutorial assumes that the aforementioned installs are done and details the steps to properly install, [librealsense](https://github.com/IntelRealSense/librealsense), [realsense-ros warpper](https://github.com/IntelRealSense/realsense-ros/tree/ros1-legacy) and the corresponding [realsense firmare](https://dev.intelrealsense.com/docs/firmware-releases).
 
@@ -141,6 +141,52 @@ cmake .. -DBUILD_EXAMPLES=true -DCMAKE_BUILD_TYPE=release -DFORCE_RSUSB_BACKEND=
 ```
 
 ## Realsense ROS Warpper Install
+
+1. Make sure your Jetson is up to date
+
+```bash
+sudo apt-get update
+sudo apt-get upgrade
+```
+
+2. Will be using gcc and g ++ version 10 to build the realsense-ros warpper. If your followed [Jetson Nano Ubuntu 18.04 Full Install](ubuntu-18-04-install.md) you can simply select them by:
+
+```bash
+sudo update-alternatives --config gcc
+```
+
+```bash
+[sudo] password for jetson:
+There are 4 choices for the alternative gcc (providing /usr/bin/gcc).
+
+  Selection    Path             Priority   Status
+------------------------------------------------------------
+* 0            /usr/bin/gcc-11   11        auto mode
+  1            /usr/bin/gcc-10   10        manual mode
+  2            /usr/bin/gcc-11   11        manual mode
+  3            /usr/bin/gcc-7    7         manual mode
+  4            /usr/bin/gcc-8    8         manual mode
+
+Press <enter> to keep the current choice[*], or type selection number: 1
+```
+
+```bash
+sudo update-alternatives --config g++
+```
+
+```bash
+There are 4 choices for the alternative g++ (providing /usr/bin/g++).
+
+  Selection    Path             Priority   Status
+------------------------------------------------------------
+* 0            /usr/bin/g++-11   11        auto mode
+  1            /usr/bin/g++-10   10        manual mode
+  2            /usr/bin/g++-11   11        manual mode
+  3            /usr/bin/g++-7    7         manual mode
+  4            /usr/bin/g++-8    8         manual mode
+
+Press <enter> to keep the current choice[*], or type selection number: 1
+```
 
 ## Realsense Firmware Install
 1. Make sure you have PC (x86_64) with Ubuntu 20.04 and Realsense properly installed.
@@ -484,7 +530,7 @@ Color 320x180 @ 6Hz YUYV
 
 ## Notes
 1. At this time for jetpacks above 4.4.1 there is no librealsense linux kernel patch. While the realsense will function as expected, you may receive some warnings when luanching the realsense ros warpper node.
-2. gcc, g++, clang version 8 and 9 contain a bug regarnding aarch64 architectures
+2. gcc, g++, clang version 8 and 9 contain a bug regarnding aarch64 architectures, see [8-10] for more details.
 
 ## References
 
