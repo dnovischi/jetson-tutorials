@@ -143,6 +143,26 @@ cmake .. -DBUILD_EXAMPLES=true -DCMAKE_BUILD_TYPE=release -DFORCE_RSUSB_BACKEND=
 ## Realsense ROS Warpper Install
 
 ## Realsense Firmware Install
+1. Make sure you have PC (x86_64) with Ubuntu 20.04 and Realsense properly installed.
+2. Download the on the PC, the Realsense Firmware 5.13.0.50 [3] for librealsense SDK 2.50.0:
+```bash
+wget https://www.intelrealsense.com/download/19295/?_ga=2.152892921.1994987032.1673174169-2104036828.1672302692
+```
+3. Unzip the archive you just downloaded:
+```bash
+unzip D400_Series_FW_5_13_0_50.zip
+```
+4. Fire up `realsense-viewer`:
+```bash
+realsense-viewer
+```
+5. Connect the Realsense D435i to an USB3.2 of your PC
+6. Close all the module streams (i.e Stero Module, RGB Camera and Motion Module)
+7. Click on the "More" Icon for your Realsense, located in the menu on the lefthand side.
+8. Select "Update Firmware" from the drop-down menu that appears.
+9. Browse to the `D400_Series_FW_5_13_0_50` directory of the firmware file you unziped in step 3.
+10. Select the `Signed_Image_UVC_5_13_0_50.bin` firmware and click "Ok".
+11. Let the process finish, then your done here.
 
 ## Realsense ROS Stream Reolutions Configuration Options
 
