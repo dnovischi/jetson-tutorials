@@ -4,7 +4,7 @@ Wellcome to [Jetson Tutorials](https://github.com/dnovischi/jetson-tutorials/tre
 
 The author and contributors are not affiliated in any shape or form with Nvidia.
 
-To become a contributor your self checkout the [Contributions](#Contributions) below.
+To become a contributor your self checkout the [Contributions](#Contributions) section below.
 
 ## Contents
 ### Jetson Nano
@@ -13,7 +13,7 @@ To become a contributor your self checkout the [Contributions](#Contributions) b
 
 3. [ROS Noetic Install on Jetson Nano with Ubuntu 18.04 (python3.6)](jetson-nano-ros-noetic-ubuntu-18-04-install.md)
 
-5. [Realsense D435i Ubuntu 18.04 - ROS Noetic Install](jetson-nano-realsense-notetic-ubuntu-18-04-install.md)
+5. [Realsense D435i Install for ROS Noetic on Ubuntu 18.04](jetson-nano-realsense-notetic-ubuntu-18-04-install.md)
 
 7. [Jetson Nano Wi-Fi USB Dongle Install](jetson-nano-wifi-dongle.md)
 

@@ -1,4 +1,4 @@
-# Realsense D435i ROS Noetic on Ubuntu 18.04 Installation
+# Realsense D435i Installation for ROS Noetic on Ubuntu 18.04
 
 In this tutorial I will describe the steps needed to fully install the Realsense D435i on the official Jetson Nano Ubuntu 18.04 distribution, with the latest Nvidia Jetpack installed based on a ROS Noetic deployment. If you don't have such a distribution installed, please complete the [Jetson Nano Ubuntu 18.04 Full Install](jetson-nano-ubuntu-18-04-install.md) and the [ROS Noetic Install on Jetson Nano with Ubuntu 18.04 (python3.6)](jetson-nano-ros-noetic-ubuntu-18-04-install.md) tutorials.
 
@@ -188,6 +188,90 @@ There are 4 choices for the alternative g++ (providing /usr/bin/g++).
 Press <enter> to keep the current choice[*], or type selection number: 1
 ```
 
+3. Create a catkin workspace and navigate into the source folder:
+
+```bash
+mkdir -p ~/catkin_ws/src
+cd ~/catkin_ws/src/
+```
+
+4. Clone the `realsense-ros` repository:
+
+```bash
+git clone https://github.com/IntelRealSense/realsense-ros.git
+```
+
+5.  Clone the `ddynamic_reconfigure` repository:
+
+```bash
+git clone https://github.com/pal-robotics/ddynamic_reconfigure.git
+```
+
+6. We also need the `image_transport_plugins` to have the compressed streams available for the warpper. So, clone the `noetic-devel` branch from `ros-perception/image_transport_plugins`:
+
+```bash
+ git clone -b noetic-devel https://github.com/ros-perception/image_transport_plugins.git
+```
+
+7. Install the necesarry dependencies:
+
+```bash
+sudo apt-get install libturbojpeg libturbojpeg0-dev libogg0 libogg-dev libtheora0 libtheora-dev
+```
+
+8. Navigate into the `realsense-ros` package:
+
+```bash
+cd ~/catkin_ws/src/realsense-ros/
+```
+
+9. Checkout the realsense-ros compatible 2.3.2 verison:
+
+```bash
+git checkout tags/2.3.2 -b 2.3.2
+```
+
+10. Navigate to the catkin workspace source folder:
+
+```bash
+cd ~/catkin_ws/src
+```
+11. Initialize the catkin workspace:
+
+```bash
+catkin_init_workspace
+```
+12. Navigate to the catkin workspace:
+
+```bash
+cd ~/catkin_ws/
+```
+
+13. Clean the workspace to see if anything is missing before the build:
+
+```bash
+catkin_make clean
+```
+
+14. Build the packages in the catkin workspace:
+
+```bash
+catkin_make -DCATKIN_ENABLE_TESTING=False -DCMAKE_BUILD_TYPE=Release
+```
+
+15. Install the packages:
+
+```bash
+catkin_make install
+```
+
+16. Optionally add the catking workspace to `bashrc` such that it will be sourced on every loggin:
+
+```bash
+echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
+source ~/.bashrc
+```
+
 ## Realsense Firmware Install
 1. Make sure you have PC (x86_64) with Ubuntu 20.04 and Realsense properly installed.
 2. Download the on the PC, the Realsense Firmware 5.13.0.50 [3] for librealsense SDK 2.50.0:
@@ -210,7 +294,319 @@ realsense-viewer
 10. Select the `Signed_Image_UVC_5_13_0_50.bin` firmware and click "Ok".
 11. Let the process finish, then your done here.
 
-## Realsense ROS Stream Reolutions Configuration Options
+
+## Run Realsense ROS Warpper
+
+1. If the all the step above succeded, plug-in the Realsense into an USB 3.2 port of the Jetson Nano. `dmesg` should output something similar to:
+
+```bash
+[23724.629063] usb 2-1: new SuperSpeed USB device number 4 using tegra-xusb
+[23724.649677] usb 2-1: New USB device found, idVendor=8086, idProduct=0b3a
+[23724.649682] usb 2-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+[23724.649686] usb 2-1: Product: Intel(R) RealSense(TM) Depth Camera 435i
+[23724.649690] usb 2-1: Manufacturer: Intel(R) RealSense(TM) Depth Camera 435i
+[23724.649693] usb 2-1: SerialNumber: 852323051376
+[23724.651046] uvcvideo: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435i (8086:0b3a)
+[23724.652813] uvcvideo: Unable to create debugfs 2-4 directory.
+[23724.652968] uvcvideo 2-1:1.0: Entity type for entity Intel(R) RealSense(TM) Depth Ca was not initialized!
+[23724.662573] uvcvideo 2-1:1.0: Entity type for entity Processing 2 was not initialized!
+[23724.670500] uvcvideo 2-1:1.0: Entity type for entity Camera 1 was not initialized!
+[23724.678330] input: Intel(R) RealSense(TM) Depth Ca as /devices/70090000.xusb/usb2/2-1/2-1:1.0/input/input4
+[23724.679278] uvcvideo: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 435i (8086:0b3a)
+[23724.680091] uvcvideo: Unable to create debugfs 2-4 directory.
+[23724.680213] uvcvideo 2-1:1.3: Entity type for entity Processing 7 was not initialized!
+[23724.688158] uvcvideo 2-1:1.3: Entity type for entity Extension 8 was not initialized!
+[23724.695997] uvcvideo 2-1:1.3: Entity type for entity Camera 6 was not initialized!
+[23724.764771] hid-sensor-hub 0003:8086:0B3A.0003: No report with id 0xffffffff found
+[23724.774434] hid-sensor-hub 0003:8086:0B3A.0003: No report with id 0xffffffff found
+[23724.840776] hid-sensor-hub 0003:8086:0B3A.0003: No report with id 0xffffffff found
+[23724.849703] hid-sensor-hub 0003:8086:0B3A.0003: No report with id 0xffffffff found
+[23725.152760] hid-sensor-hub 0003:8086:0B3A.0003: No report with id 0xffffffff found
+```
+
+2. Launch the realsense-ros warpper with the following arguments:
+
+```bash
+roslaunch realsense2_camera rs_camera.launch depth_width:=424 depth_height:=240 depth_fps:=15 color_width:=320 color_height:=180 color_fps:=30 infra_width:=424 infra_height:=240 infra_fps:=15 filters:=pointcloud enable_infra:=True enable_gyro:=True enable_accel:=True align_depth:=True enable_sync:=True
+```
+
+the output shoud be similar to:
+
+```bash
+... logging to /home/jetson/.ros/log/5371089c-8f77-11ed-a3af-3460f9e7d9c6/roslaunch-nano-antrobot3-9581.log
+Checking log directory for disk usage. This may take a while.
+Press Ctrl-C to interrupt
+Done checking log file disk usage. Usage is <1GB.
+
+started roslaunch server http://nano-antrobot3:33435/
+
+SUMMARY
+========
+
+PARAMETERS
+ * /camera/realsense2_camera/accel_fps: -1
+ * /camera/realsense2_camera/accel_frame_id: camera_accel_frame
+ * /camera/realsense2_camera/accel_optical_frame_id: camera_accel_opti...
+ * /camera/realsense2_camera/align_depth: True
+ * /camera/realsense2_camera/aligned_depth_to_color_frame_id: camera_aligned_de...
+ * /camera/realsense2_camera/aligned_depth_to_fisheye1_frame_id: camera_aligned_de...
+ * /camera/realsense2_camera/aligned_depth_to_fisheye2_frame_id: camera_aligned_de...
+ * /camera/realsense2_camera/aligned_depth_to_fisheye_frame_id: camera_aligned_de...
+ * /camera/realsense2_camera/aligned_depth_to_infra1_frame_id: camera_aligned_de...
+ * /camera/realsense2_camera/aligned_depth_to_infra2_frame_id: camera_aligned_de...
+ * /camera/realsense2_camera/allow_no_texture_points: False
+ * /camera/realsense2_camera/base_frame_id: camera_link
+ * /camera/realsense2_camera/calib_odom_file:
+ * /camera/realsense2_camera/clip_distance: -2.0
+ * /camera/realsense2_camera/color_fps: 30
+ * /camera/realsense2_camera/color_frame_id: camera_color_frame
+ * /camera/realsense2_camera/color_height: 180
+ * /camera/realsense2_camera/color_optical_frame_id: camera_color_opti...
+ * /camera/realsense2_camera/color_width: 320
+ * /camera/realsense2_camera/confidence_fps: -1
+ * /camera/realsense2_camera/confidence_height: -1
+ * /camera/realsense2_camera/confidence_width: -1
+ * /camera/realsense2_camera/depth_fps: 15
+ * /camera/realsense2_camera/depth_frame_id: camera_depth_frame
+ * /camera/realsense2_camera/depth_height: 240
+ * /camera/realsense2_camera/depth_optical_frame_id: camera_depth_opti...
+ * /camera/realsense2_camera/depth_width: 424
+ * /camera/realsense2_camera/device_type:
+ * /camera/realsense2_camera/enable_accel: True
+ * /camera/realsense2_camera/enable_color: True
+ * /camera/realsense2_camera/enable_confidence: True
+ * /camera/realsense2_camera/enable_depth: True
+ * /camera/realsense2_camera/enable_fisheye1: False
+ * /camera/realsense2_camera/enable_fisheye2: False
+ * /camera/realsense2_camera/enable_fisheye: False
+ * /camera/realsense2_camera/enable_gyro: True
+ * /camera/realsense2_camera/enable_infra1: False
+ * /camera/realsense2_camera/enable_infra2: False
+ * /camera/realsense2_camera/enable_infra: True
+ * /camera/realsense2_camera/enable_pointcloud: False
+ * /camera/realsense2_camera/enable_pose: False
+ * /camera/realsense2_camera/enable_sync: True
+ * /camera/realsense2_camera/filters: pointcloud
+ * /camera/realsense2_camera/fisheye1_frame_id: camera_fisheye1_f...
+ * /camera/realsense2_camera/fisheye1_optical_frame_id: camera_fisheye1_o...
+ * /camera/realsense2_camera/fisheye2_frame_id: camera_fisheye2_f...
+ * /camera/realsense2_camera/fisheye2_optical_frame_id: camera_fisheye2_o...
+ * /camera/realsense2_camera/fisheye_fps: -1
+ * /camera/realsense2_camera/fisheye_frame_id: camera_fisheye_frame
+ * /camera/realsense2_camera/fisheye_height: -1
+ * /camera/realsense2_camera/fisheye_optical_frame_id: camera_fisheye_op...
+ * /camera/realsense2_camera/fisheye_width: -1
+ * /camera/realsense2_camera/gyro_fps: -1
+ * /camera/realsense2_camera/gyro_frame_id: camera_gyro_frame
+ * /camera/realsense2_camera/gyro_optical_frame_id: camera_gyro_optic...
+ * /camera/realsense2_camera/imu_optical_frame_id: camera_imu_optica...
+ * /camera/realsense2_camera/infra1_frame_id: camera_infra1_frame
+ * /camera/realsense2_camera/infra1_optical_frame_id: camera_infra1_opt...
+ * /camera/realsense2_camera/infra2_frame_id: camera_infra2_frame
+ * /camera/realsense2_camera/infra2_optical_frame_id: camera_infra2_opt...
+ * /camera/realsense2_camera/infra_fps: 15
+ * /camera/realsense2_camera/infra_height: 240
+ * /camera/realsense2_camera/infra_rgb: False
+ * /camera/realsense2_camera/infra_width: 424
+ * /camera/realsense2_camera/initial_reset: False
+ * /camera/realsense2_camera/json_file_path:
+ * /camera/realsense2_camera/linear_accel_cov: 0.01
+ * /camera/realsense2_camera/odom_frame_id: camera_odom_frame
+ * /camera/realsense2_camera/ordered_pc: False
+ * /camera/realsense2_camera/pointcloud_texture_index: 0
+ * /camera/realsense2_camera/pointcloud_texture_stream: RS2_STREAM_COLOR
+ * /camera/realsense2_camera/pose_frame_id: camera_pose_frame
+ * /camera/realsense2_camera/pose_optical_frame_id: camera_pose_optic...
+ * /camera/realsense2_camera/publish_odom_tf: True
+ * /camera/realsense2_camera/publish_tf: True
+ * /camera/realsense2_camera/reconnect_timeout: 6.0
+ * /camera/realsense2_camera/rosbag_filename:
+ * /camera/realsense2_camera/serial_no:
+ * /camera/realsense2_camera/stereo_module/exposure/1: 7500
+ * /camera/realsense2_camera/stereo_module/exposure/2: 1
+ * /camera/realsense2_camera/stereo_module/gain/1: 16
+ * /camera/realsense2_camera/stereo_module/gain/2: 16
+ * /camera/realsense2_camera/tf_publish_rate: 0.0
+ * /camera/realsense2_camera/topic_odom_in: odom_in
+ * /camera/realsense2_camera/unite_imu_method:
+ * /camera/realsense2_camera/usb_port_id:
+ * /camera/realsense2_camera/wait_for_device_timeout: -1.0
+ * /rosdistro: noetic
+ * /rosversion: 1.15.15
+
+NODES
+  /camera/
+    realsense2_camera (nodelet/nodelet)
+    realsense2_camera_manager (nodelet/nodelet)
+
+auto-starting new master
+process[master]: started with pid [9591]
+ROS_MASTER_URI=http://localhost:11311
+
+setting /run_id to 5371089c-8f77-11ed-a3af-3460f9e7d9c6
+process[rosout-1]: started with pid [9604]
+started core service [/rosout]
+process[camera/realsense2_camera_manager-2]: started with pid [9621]
+process[camera/realsense2_camera-3]: started with pid [9622]
+[ INFO] [1673197820.386920889]: Initializing nodelet with 4 worker threads.
+[ INFO] [1673197820.598877294]: RealSense ROS v2.3.2
+[ INFO] [1673197820.598970786]: Built with LibRealSense v2.50.0
+[ INFO] [1673197820.599037402]: Running with LibRealSense v2.50.0
+[ INFO] [1673197820.651537873]:
+[ INFO] [1673197820.667414976]: Device with serial number 843112071761 was found.
+
+[ INFO] [1673197820.667532270]: Device with physical ID /sys/devices/70090000.xusb/usb2/2-1/2-1:1.0/video4linux/video0 was found.
+[ INFO] [1673197820.667599876]: Device with name Intel RealSense D435I was found.
+[ INFO] [1673197820.668688179]: Device with port number 2-1 was found.
+[ INFO] [1673197820.668791880]: Device USB type: 3.2
+[ INFO] [1673197820.682304349]: getParameters...
+[ INFO] [1673197820.946129911]: setupDevice...
+[ INFO] [1673197820.946221319]: JSON file is not provided
+[ INFO] [1673197820.946287258]: ROS Node Namespace: camera
+[ INFO] [1673197820.946372989]: Device Name: Intel RealSense D435I
+[ INFO] [1673197820.946429865]: Device Serial No: 843112071761
+[ INFO] [1673197820.946484189]: Device physical port: /sys/devices/70090000.xusb/usb2/2-1/2-1:1.0/video4linux/video0
+[ INFO] [1673197820.946536065]: Device FW version: 05.13.00.50
+[ INFO] [1673197820.946588983]: Device Product ID: 0x0B3A
+[ INFO] [1673197820.946658099]: Enable PointCloud: On
+[ INFO] [1673197820.946707527]: Align Depth: On
+[ INFO] [1673197820.946757060]: Sync Mode: On
+[ INFO] [1673197820.946885760]: Device Sensors:
+[ INFO] [1673197820.957336760]: Stereo Module was found.
+[ INFO] [1673197820.977268686]: RGB Camera was found.
+[ INFO] [1673197820.977919013]: Motion Module was found.
+[ INFO] [1673197820.978037192]: (Infrared, 0) sensor isn't supported by current device! -- Skipping...
+[ INFO] [1673197820.978106881]: (Confidence, 0) sensor isn't supported by current device! -- Skipping...
+[ INFO] [1673197820.978937211]: Add Filter: pointcloud
+[ INFO] [1673197820.980422971]: num_filters: 2
+[ INFO] [1673197820.980512296]: Setting Dynamic reconfig parameters.
+[ WARN] [1673197821.142184995]: Param '/camera/rgb_camera/power_line_frequency' has value 3 that is not in the enum { {50Hz: 1} {60Hz: 2} {Disabled: 0} }. Removing this parameter from dynamic reconfigure options.
+[ INFO] [1673197821.206801813]: Done Setting Dynamic reconfig parameters.
+[ INFO] [1673197821.207679852]: depth stream is enabled - width: 424, height: 240, fps: 15, Format: Z16
+[ INFO] [1673197821.208401742]: color stream is enabled - width: 320, height: 180, fps: 30, Format: RGB8
+[ INFO] [1673197821.209274521]: gyro stream is enabled - fps: 200
+[ INFO] [1673197821.209368586]: accel stream is enabled - fps: 63
+[ INFO] [1673197821.209464421]: setupPublishers...
+[ INFO] [1673197821.218529558]: Expected frequency for depth = 15.00000
+[ INFO] [1673197821.349248382]: Expected frequency for color = 30.00000
+[ INFO] [1673197821.464782045]: Expected frequency for aligned_depth_to_color = 30.00000
+[ INFO] [1673197821.589860594]: setupStreams...
+ 08/01 19:10:21,593 WARNING [547638169984] (ds5-motion.cpp:473) IMU Calibration is not available, default intrinsic and extrinsic will be used.
+[ INFO] [1673197821.667648781]: SELECTED BASE:Depth, 0
+[ INFO] [1673197821.719563199]: RealSense Node Is Up!
+[ WARN] [1673197821.723084157]:
+
+```
+
+Note that the:
+
+```bash
+[ WARN] [1673197821.142184995]: Param '/camera/rgb_camera/power_line_frequency' has value 3 that is not in the enum { {50Hz: 1} {60Hz: 2} {Disabled: 0} }. Removing this parameter from dynamic reconfigure options.
+```
+
+is due to the lack of a kernel patch.
+
+3. Running `rostopic list` yiels the following:
+
+```bash
+/camera/accel/imu_info
+/camera/accel/metadata
+/camera/accel/sample
+/camera/align_to_color/parameter_descriptions
+/camera/align_to_color/parameter_updates
+/camera/aligned_depth_to_color/camera_info
+/camera/aligned_depth_to_color/image_raw
+/camera/aligned_depth_to_color/image_raw/compressed
+/camera/aligned_depth_to_color/image_raw/compressed/parameter_descriptions
+/camera/aligned_depth_to_color/image_raw/compressed/parameter_updates
+/camera/aligned_depth_to_color/image_raw/compressedDepth
+/camera/aligned_depth_to_color/image_raw/compressedDepth/parameter_descriptions
+/camera/aligned_depth_to_color/image_raw/compressedDepth/parameter_updates
+/camera/aligned_depth_to_color/image_raw/theora
+/camera/aligned_depth_to_color/image_raw/theora/parameter_descriptions
+/camera/aligned_depth_to_color/image_raw/theora/parameter_updates
+/camera/color/camera_info
+/camera/color/image_raw
+/camera/color/image_raw/compressed
+/camera/color/image_raw/compressed/parameter_descriptions
+/camera/color/image_raw/compressed/parameter_updates
+/camera/color/image_raw/compressedDepth
+/camera/color/image_raw/compressedDepth/parameter_descriptions
+/camera/color/image_raw/compressedDepth/parameter_updates
+/camera/color/image_raw/theora
+/camera/color/image_raw/theora/parameter_descriptions
+/camera/color/image_raw/theora/parameter_updates
+/camera/color/metadata
+/camera/depth/camera_info
+/camera/depth/color/points
+/camera/depth/image_rect_raw
+/camera/depth/image_rect_raw/compressed
+/camera/depth/image_rect_raw/compressed/parameter_descriptions
+/camera/depth/image_rect_raw/compressed/parameter_updates
+/camera/depth/image_rect_raw/compressedDepth
+/camera/depth/image_rect_raw/compressedDepth/parameter_descriptions
+/camera/depth/image_rect_raw/compressedDepth/parameter_updates
+/camera/depth/image_rect_raw/theora
+/camera/depth/image_rect_raw/theora/parameter_descriptions
+/camera/depth/image_rect_raw/theora/parameter_updates
+/camera/depth/metadata
+/camera/extrinsics/depth_to_color
+/camera/extrinsics/depth_to_infra1
+/camera/extrinsics/depth_to_infra2
+/camera/gyro/imu_info
+/camera/gyro/metadata
+/camera/gyro/sample
+/camera/infra1/camera_info
+/camera/infra1/image_rect_raw
+/camera/infra1/image_rect_raw/compressed
+/camera/infra1/image_rect_raw/compressed/parameter_descriptions
+/camera/infra1/image_rect_raw/compressed/parameter_updates
+/camera/infra1/image_rect_raw/compressedDepth
+/camera/infra1/image_rect_raw/compressedDepth/parameter_descriptions
+/camera/infra1/image_rect_raw/compressedDepth/parameter_updates
+/camera/infra1/image_rect_raw/theora
+/camera/infra1/image_rect_raw/theora/parameter_descriptions
+/camera/infra1/image_rect_raw/theora/parameter_updates
+/camera/infra1/metadata
+/camera/infra2/camera_info
+/camera/infra2/image_rect_raw
+/camera/infra2/image_rect_raw/compressed
+/camera/infra2/image_rect_raw/compressed/parameter_descriptions
+/camera/infra2/image_rect_raw/compressed/parameter_updates
+/camera/infra2/image_rect_raw/compressedDepth
+/camera/infra2/image_rect_raw/compressedDepth/parameter_descriptions
+/camera/infra2/image_rect_raw/compressedDepth/parameter_updates
+/camera/infra2/image_rect_raw/theora
+/camera/infra2/image_rect_raw/theora/parameter_descriptions
+/camera/infra2/image_rect_raw/theora/parameter_updates
+/camera/infra2/metadata
+/camera/motion_module/parameter_descriptions
+/camera/motion_module/parameter_updates
+/camera/pointcloud/parameter_descriptions
+/camera/pointcloud/parameter_updates
+/camera/realsense2_camera_manager/bond
+/camera/rgb_camera/auto_exposure_roi/parameter_descriptions
+/camera/rgb_camera/auto_exposure_roi/parameter_updates
+/camera/rgb_camera/parameter_descriptions
+/camera/rgb_camera/parameter_updates
+/camera/stereo_module/auto_exposure_roi/parameter_descriptions
+/camera/stereo_module/auto_exposure_roi/parameter_updates
+/camera/stereo_module/parameter_descriptions
+/camera/stereo_module/parameter_updates
+/diagnostics
+/rosout
+/rosout_agg
+/tf
+/tf_static
+```
+
+4. If you configure your nano to run in a multiple machine ROS environment or run rviz directly on the nano, you should be able to get a result similar to the one in the image below:
+
+![rviz-realsense-screenshot](res/Screenshot-from-2023-01-08.png??raw=true)
+
+5. That's it. It works!
+
+## Realsense ROS Stream Resolution Configuration Options
 
 To provide the configuration options when you launch the realsense warpper the argument format is as follows:
 
