@@ -4,13 +4,13 @@ TODO: Add description
 
 ## Jetson Nano
 
-1. [Ubuntu 18.04 Full Install](ubuntu-18-04-install.md)
+1. [Ubuntu 18.04 Full Install](jetson-nano-ubuntu-18-04-install.md)
 
-3. [ROS Noetic Install on Jetson Nano with Ubuntu 18.04 (python3.6)](ros-noetic-ubuntu-18-04-install.md)
+3. [ROS Noetic Install on Jetson Nano with Ubuntu 18.04 (python3.6)](jetson-nano-ros-noetic-ubuntu-18-04-install.md)
 
-5. [Realsense D435i Ubuntu 18.04 - ROS Noetic Install](realsense-notetic-ubuntu-18-04-install.md)
+5. [Realsense D435i Ubuntu 18.04 - ROS Noetic Install](jetson-nano-realsense-notetic-ubuntu-18-04-install.md)
 
-7. [Jetson Nano Wi-Fi USB Dongle Install](jetson-wifi-dongle.md)
+7. [Jetson Nano Wi-Fi USB Dongle Install](jetson-nano-wifi-dongle.md)
 
 ## Contributions
 
