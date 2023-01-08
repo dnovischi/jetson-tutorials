@@ -1,8 +1,13 @@
-# Jetson Configuration Tutorials
+# Jetson Tutorials
 
-TODO: Add description
+Wellcome to [Jetson Tutorials](https://github.com/dnovischi/jetson-tutorials/tree/main#jetson-configuration-tutorials) GitHub page. Here, you'll find step by step instructions to setup your Jetson.
 
-## Jetson Nano
+The author and contributors are not affiliated in any shape or form with Nvidia.
+
+To become a contributor your self checkout the [Contributions](#Contributions) below.
+
+## Contents
+### Jetson Nano
 
 1. [Ubuntu 18.04 Full Install](jetson-nano-ubuntu-18-04-install.md)
 
