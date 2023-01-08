@@ -2,13 +2,13 @@
 
 In this tutorial I will describe the steps needed to fully install the Realsense D435i on the official Jetson Nano Ubuntu 18.04 distribution, with the latest Nvidia Jetpack installed based on a ROS Noetic deployment. If you don't have such a distribution installed, please complete the [Jetson Nano Ubuntu 18.04 Full Install](jetson-nano-ubuntu-18-04-install.md) and the [ROS Noetic Install on Jetson Nano with Ubuntu 18.04 (python3.6)](jetson-nano-ros-noetic-ubuntu-18-04-install.md) tutorials.
 
-The tutorial assumes that the aforementioned installs are done and details the steps to properly install, [librealsense](https://github.com/IntelRealSense/librealsense), [realsense-ros warpper](https://github.com/IntelRealSense/realsense-ros/tree/ros1-legacy) and the corresponding [realsense firmare](https://dev.intelrealsense.com/docs/firmware-releases).
+The tutorial assumes that the aforementioned installs are done, while it details the steps to properly install [librealsense](https://github.com/IntelRealSense/librealsense), [realsense-ros warpper](https://github.com/IntelRealSense/realsense-ros/tree/ros1-legacy) and the corresponding [realsense firmare](https://dev.intelrealsense.com/docs/firmware-releases).
 
 Please note that the ROS Realsense warpper 2.3.2 that is compatible with ROS Noetic [2] requires librealsense version 2.50.0 [7]. While the recommaned Realsense D435i Ffirmware version is 5.13.0.50 [3].
 
 ## Librealsense Installation
 
-1. Disconnect the Realsense USB from the Jetson Nano.
+1. Disconnect the Realsense USB cable from the Jetson Nano.
 2. Make sure your Jetson is up to date
 
 ```bash
@@ -16,7 +16,7 @@ sudo apt-get update
 sudo apt-get upgrade
 ```
 
-3. Librealsense with CUDA (10.2) support requires us to build the library with version 8 for gcc and g++. If your followed [Jetson Nano Ubuntu 18.04 Full Install](ubuntu-18-04-install.md) you can simply select them by:
+3. Librealsense with CUDA 10.2 support requires us to build the library with version 8 for gcc and g++. If you followed [Jetson Nano Ubuntu 18.04 Full Install](ubuntu-18-04-install.md), you can simply select the versions by:
 
 ```bash
 sudo update-alternatives --config gcc
@@ -90,7 +90,7 @@ unzip v2.50.0.zip
 cd librealsense-2.50.0
 ```
 
-7. You can try to run the L45 patch script, but it will fail since the latest jetpack is not supported. No worries, it will still work fine aside from a warining in ROS from the ROS realsense warpper:
+7. You can try to run the L4T patch script, but it will fail since the latest jetpack is not supported. No worries, it will still work fine, aside from a warining in ROS from the realsense-ros warpper:
 
 ```bash
 ./scripts/patch-realsense-ubuntu-L4T.sh
@@ -274,7 +274,7 @@ source ~/.bashrc
 
 ## Realsense Firmware Install
 1. Make sure you have PC (x86_64) with Ubuntu 20.04 and Realsense properly installed.
-2. Download the on the PC, the Realsense Firmware 5.13.0.50 [3] for librealsense SDK 2.50.0:
+2. Download the on the PC, the Realsense Firmware 5.13.0.50 for librealsense SDK 2.50.0 (see [3] for more details):
 ```bash
 wget https://www.intelrealsense.com/download/19295/?_ga=2.152892921.1994987032.1673174169-2104036828.1672302692
 ```
@@ -297,7 +297,8 @@ realsense-viewer
 
 ## Run Realsense ROS Warpper
 
-1. If the all the step above succeded, plug-in the Realsense into an USB 3.2 port of the Jetson Nano. `dmesg` should output something similar to:
+1. If the all the steps above succeded, plug-in the Realsense into an USB 3.2 port of the Jetson Nano.
+The `dmesg` command should output something similar to:
 
 ```bash
 [23724.629063] usb 2-1: new SuperSpeed USB device number 4 using tegra-xusb
@@ -600,9 +601,9 @@ is due to the lack of a kernel patch.
 /tf_static
 ```
 
-4. If you configure your nano to run in a multiple machine ROS environment or run rviz directly on the nano, you should be able to get a result similar to the one in the image below:
+4. If you run rviz directly on the nano or you configure it to run in a multiple machine ROS environment, you should be able to get a result similar to the one in the image below:
 
-![rviz-realsense-screenshot](res/Screenshot-from-2023-01-08.png??raw=true)
+![rviz-realsense-screenshot](res/Screenshot-from-2023-01-08.png)
 
 5. That's it. It works!
 
