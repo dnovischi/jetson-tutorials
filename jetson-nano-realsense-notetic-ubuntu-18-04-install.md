@@ -602,7 +602,7 @@ is due to the lack of a kernel patch.
 
 4. If configure your nano to run in a multiple machine ROS environment or run rviz directly on the nano you should be able to get a result similar to the one in the image below:
 
-![rviz-realsense-screenshot][./res/Screenshot-from-2023-01-08.png "rviz screenshot"]
+![rviz-realsense-screenshot](res/Screenshot-from-2023-01-08.png??raw=true)
 
 5. That's it. It works!
 
