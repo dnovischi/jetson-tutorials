@@ -9,8 +9,14 @@ Please note that the ROS Realsense warpper 2.3.2 that is compatible with ROS Noe
 ## Librealsense Installation
 
 1. Disconnect the Realsense USB from the Jetson Nano.
+2. Make sure your Jetson is up to date
 
-2. Librealsense with CUDA (10.2) support requires us to build the library with version 8 for gcc and g++. If your followed [Jetson Nano Ubuntu 18.04 Full Install](ubuntu-18-04-install.md) you can simply select them by:
+```bash
+sudo apt-get update
+sudo apt-get upgrade
+```
+
+3. Librealsense with CUDA (10.2) support requires us to build the library with version 8 for gcc and g++. If your followed [Jetson Nano Ubuntu 18.04 Full Install](ubuntu-18-04-install.md) you can simply select them by:
 
 ```bash
 sudo update-alternatives --config gcc
@@ -49,7 +55,7 @@ There are 4 choices for the alternative g++ (providing /usr/bin/g++).
 Press <enter> to keep the current choice[*], or type selection number: 4
 ```
 
-3. Set the path for CUDA compiler by editing the `~/.bashrc` file:
+4. Set the path for CUDA compiler by editing the `~/.bashrc` file:
 
 ```bash
 nano ~/.bashrc
@@ -70,7 +76,7 @@ then source the file:
 source ~/.bashrc
 ```
 
-4. Download the librealsense 2.50.0 realease and uzip the archive:
+5. Download the librealsense 2.50.0 realease and uzip the archive:
 
 ```bash
 wget https://github.com/IntelRealSense/librealsense/archive/refs/tags/v2.50.0.zip
@@ -78,13 +84,13 @@ wget https://github.com/IntelRealSense/librealsense/archive/refs/tags/v2.50.0.zi
 unzip v2.50.0.zip
 ```
 
-5. Navigate to `librealsense-2.50.0`:
+6. Navigate to `librealsense-2.50.0`:
 
 ```bash
 cd librealsense-2.50.0
 ```
 
-6. You can try to run the L45 patch script, but it will fail since the latest jetpack is not supported. No worries, it will still work fine aside from a warining in ROS from the ROS realsense warpper:
+7. You can try to run the L45 patch script, but it will fail since the latest jetpack is not supported. No worries, it will still work fine aside from a warining in ROS from the ROS realsense warpper:
 
 ```bash
 ./scripts/patch-realsense-ubuntu-L4T.sh
@@ -110,25 +116,25 @@ Unsupported JetPack revision 32.7.3 aborting script
 
 ```
 
-7. Install the librealsense build prerequisites:
+8. Install the librealsense build prerequisites:
 
 ```bash
 sudo apt-get install git libssl-dev libusb-1.0-0-dev libudev-dev pkg-config libgtk-3-dev -y
 ```
 
-8. Install the udev Realsense access rules:
+9. Install the udev Realsense access rules:
 
 ```bash
 ./scripts/setup_udev_rules.sh
 ```
 
-9. Create a `build` directory and navigate to it:
+10. Create a `build` directory and navigate to it:
 
 ```bash
 mkdir build && cd build
 ```
 
-10. Build and install librealsense:
+11. Build and install librealsense:
 
 ```bash
 cmake .. -DBUILD_EXAMPLES=true -DCMAKE_BUILD_TYPE=release -DFORCE_RSUSB_BACKEND=false -DBUILD_WITH_CUDA=true && make -j$(($(nproc)-1)) && sudo make install
