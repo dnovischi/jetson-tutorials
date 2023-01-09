@@ -11,6 +11,8 @@ To become a contributor your self checkout the [Contributions](#Contributions) s
 
 1. [Ubuntu 18.04 Full Install](jetson-nano-ubuntu-18-04-install.md)
 
+2. [Ubuntu 20.04 Install Through Distribution Upgrade](jetson-nano-ubuntu-20-04-install.md)
+
 3. [ROS Noetic Install on Jetson Nano with Ubuntu 18.04 (python3.6)](jetson-nano-ros-noetic-ubuntu-18-04-install.md)
 
 5. [Realsense D435i Install for ROS Noetic on Ubuntu 18.04](jetson-nano-realsense-notetic-ubuntu-18-04-install.md)
