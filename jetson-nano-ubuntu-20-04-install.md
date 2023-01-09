@@ -141,7 +141,7 @@ sudo nano cuda-l4t-10-2-local.list
 sudo nano nvidia-l4t-apt-source.list
 sudo nano visionworks-repo.list
 sudo nano visionworks-sfm-repo.list
-sudo nano visionworks-tracking-repo.lis
+sudo nano visionworks-tracking-repo.list
 ```
 
 20. Some software packages, especially the CUDA software, requires a gcc, g++ and clang version 8. However verion 8 and 9 of these toolchains have some bugs relating to the optimization options for arm achitectures (i.e. aarch64) like found in rpi and jetson nano. So, to get around various diffrent problems when compilation is required, all toolchains must be available:

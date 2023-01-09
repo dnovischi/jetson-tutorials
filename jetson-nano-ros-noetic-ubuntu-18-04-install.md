@@ -22,16 +22,111 @@ sudo apt install curl # if you haven't already installed curl
 
 curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
 
-sudo apt install python3-catkin-pkg python3-rosdistro python3-rosinstall-generator python3-rospkg python3-vcstools python3-vcstool
+sudo apt-get update
+
+sudo apt-get install python3-catkin-pkg python3-rosdistro python3-rosinstall-generator python3-rospkg python3-vcstools python3-vcstool
 ```
 
-3. If the package installation fails try:
+3. Initialize ROS dependency manager tool:
+
+```bash
+sudo rosdep init
+rosdep update
+```
+4. Create a catkin workspace. Since, this will be the place were we'll build ROS a suggest you give it a diffrent name than the usual `catkin_ws`:
+
+```bash
+mkdir ~/ros_catkin_ws
+cd ~/ros_catkin_ws
+```
+5. Depending on what you want to achive you can choose to download the packages you will need. That is, similar to an install through a packages manager, like  ROS-Base or ROS Desktop-Full Install, you can choose to download and build the variant to your specification as indicated in [4].\
+For example, to download the packages contained within ROS-Base do the following:
+
+```bash
+rosinstall_generator robot perception --rosdistro noetic --deps --tar > noetic-robot-perception.rosinstall
+mkdir ./src
+vcs import --input noetic-robot-perception.rosinstall ./src
+```
+
+whereas to download the packages contained within ROS Desktop do the following:
+
+```bash
+rosinstall_generator desktop --rosdistro noetic --deps --tar > noetic-desktop.rosinstall
+mkdir ./src
+vcs import --input noetic-desktop.rosinstall ./src
+```
+
+6. In order to build we must first resolve dependencies with rosdep. Please note that some dependencies might be reported as missing (like tf), however the build and install will succeed properly. It is very important here to use the `-r` option to skip the ones that fail.
+
+```bash
+rosdep install --from-paths ./src --ignore-packages-from-source --rosdistro noetic -y -r
+```
+7. Before building we need to modify the cv_bridge `CMakeLists.txt` to avoid a compilation error:
+
+```bash
+nano ./src/vision_opencv/cv_bridge/CMakeLists.txt
+```
+
+change the line `find_package(Boost REQUIRED python37)` to `find_package(Boost REQUIRED python3)`.
+
+8. Build the distribution and install it as usual in the /opt/ros/noetic folder:
+
+```bash
+sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=/usr/bin/python3 --install-space /opt/ros/noetic
+```
+
+9. Don't forget to setup your environment:
+
+```bash
+echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
+source ~/.bashrc
+```
+
+10. To test the ROS Noetic installation launch the roscore before making other changes:
+
+```bash
+roscore
+... logging to /home/jetson/.ros/log/43644112-8dab-11ed-ba50-a967e2d0f2c8/roslaunch-nano-23182.log
+Checking log directory for disk usage. This may take a while.
+Press Ctrl-C to interrupt
+Done checking log file disk usage. Usage is <1GB.
+
+started roslaunch server http://nano.local:43793/
+ros_comm version 1.15.15
+
+
+SUMMARY
+========
+
+PARAMETERS
+ * /rosdistro: noetic
+ * /rosversion: 1.15.15
+
+NODES
+
+auto-starting new master
+process[master]: started with pid [23192]
+ROS_MASTER_URI=http://nano.local:11311/
+
+setting /run_id to 43644112-8dab-11ed-ba50-a967e2d0f2c8
+process[rosout-1]: started with pid [23202]
+started core service [/rosout]
+^C[rosout-1] killing on exit
+[master] killing on exit
+shutting down processing monitor...
+... shutting down processing monitor complete
+done
+```
+
+## Troubleshooting
+
+1. If a package installation fails try:
 
 ```bash
 sudo apt install --fix-broken
 ```
 
-4. If that fails you need to install each one at a time. For example, if
+2. If that fails you need to install each one at a time. For example, if
 
 ```bash
 sudo apt install python3-catkin-pkg
@@ -73,103 +168,13 @@ sudo dpkg -i --force-overwrite /var/cache/apt/archives/python3-catkin-pkg-module
 
 Do this for every missing package.
 
-5. Install the necesarry package dependencies for the build and see if all other packages are available. Please note that some steps below may give errors due to the fact that we already have them installed.
+3. You can aslo install the necesarry package dependencies through pip3. Please note that some steps below may give rise to errors due to the fact that you may have already have them installed through the package manager.
 
 ```bash
 sudo apt-get install python3-rosdep python3-rosinstall-generator python3-vcstools build-essential libgtest-dev liborocos-kdl-dev
 sudo -H python3 -m pip install -U pip
 sudo -H python3 -m pip install -U setuptools
 sudo -H python3 -m pip install -U rosdep rosinstall_generator vcstool
-```
-6. Initialize ROS dependency manager tool:
-
-```bash
-sudo rosdep init
-rosdep update
-```
-7. Create a catkin workspace. Since, this will be the place were we'll build ROS a suggest you give it a diffrent name than the usual `catkin_ws`:
-
-```bash
-mkdir ~/ros_catkin_ws
-cd ~/ros_catkin_ws
-```
-8. Depending on what you want to achive you can choose to download the packages you will need. That is, similar to an install through a packages manager, like  ROS-Base or ROS Desktop-Full Install, you can choose to download and build the variant to your specification as indicated in [4].\
-For example, to download the packages contained within ROS-Base do the following:
-
-```bash
-rosinstall_generator robot perception --rosdistro noetic --deps --tar > noetic-robot-perception.rosinstall
-mkdir ./src
-vcs import --input noetic-robot-perception.rosinstall ./src
-```
-
-whereas to download the packages contained within ROS Desktop do the following:
-
-```bash
-rosinstall_generator desktop --rosdistro noetic --deps --tar > noetic-desktop.rosinstall
-mkdir ./src
-vcs import --input noetic-desktop.rosinstall ./src
-```
-
-9. In order to build we must first resolve dependencies with rosdep. Please note that some dependencies might be reported as missing (like tf), however the build and install will succeed properly. It is very important here to use the `-r` option to skip the ones that fail.
-
-```bash
-rosdep install --from-paths ./src --ignore-packages-from-source --rosdistro noetic -y -r
-```
-10. Before building we need to modify the cv_bridge `CMakeLists.txt` to avoid a compilation error:
-
-```bash
-nano ./src/vision_opencv/cv_bridge/CMakeLists.txt
-```
-
-change the line `find_package(Boost REQUIRED python37)` to `find_package(Boost REQUIRED python3)`.
-
-11. Build the distribution and install it as usual in the /opt/ros/noetic folder:
-
-```bash
-sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=/usr/bin/python3 --install-space /opt/ros/noetic
-```
-
-12. Don't forget to setup your environment:
-
-```bash
-echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
-source ~/.bashrc
-```
-
-13. To test the ROS Noetic installation launch the roscore before making other changes:
-
-```bash
-roscore
-... logging to /home/jetson/.ros/log/43644112-8dab-11ed-ba50-a967e2d0f2c8/roslaunch-nano-23182.log
-Checking log directory for disk usage. This may take a while.
-Press Ctrl-C to interrupt
-Done checking log file disk usage. Usage is <1GB.
-
-started roslaunch server http://nano.local:43793/
-ros_comm version 1.15.15
-
-
-SUMMARY
-========
-
-PARAMETERS
- * /rosdistro: noetic
- * /rosversion: 1.15.15
-
-NODES
-
-auto-starting new master
-process[master]: started with pid [23192]
-ROS_MASTER_URI=http://nano.local:11311/
-
-setting /run_id to 43644112-8dab-11ed-ba50-a967e2d0f2c8
-process[rosout-1]: started with pid [23202]
-started core service [/rosout]
-^C[rosout-1] killing on exit
-[master] killing on exit
-shutting down processing monitor...
-... shutting down processing monitor complete
-done
 ```
 
 ## References
