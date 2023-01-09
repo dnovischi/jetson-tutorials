@@ -328,7 +328,7 @@ The `dmesg` command should output something similar to:
 2. Launch the realsense-ros warpper with the following arguments:
 
 ```bash
-roslaunch realsense2_camera rs_camera.launch depth_width:=424 depth_height:=240 depth_fps:=15 color_width:=320 color_height:=180 color_fps:=30 infra_width:=424 infra_height:=240 infra_fps:=15 filters:=pointcloud enable_infra:=True enable_gyro:=True enable_accel:=True align_depth:=True enable_sync:=True
+roslaunch realsense2_camera rs_camera.launch depth_width:=424 depth_height:=240 depth_fps:=15 color_width:=320 color_height:=180 color_fps:=30 infra_width:=424 infra_height:=240 infra_fps:=15 filters:=pointcloud enable_infra1:=True enable_infra2:=True enable_gyro:=True enable_accel:=True align_depth:=True enable_sync:=True
 ```
 
 the output shoud be similar to:
