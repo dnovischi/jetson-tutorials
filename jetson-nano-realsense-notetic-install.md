@@ -1,8 +1,10 @@
-# Realsense D435i Installation for ROS Noetic on Ubuntu 18.04
+# Realsense D435i Installation for ROS Noetic on Ubuntu 18.04 and Ubuntu 20.04
 
-In this tutorial I will describe the steps needed to fully install the Realsense D435i on the official Jetson Nano Ubuntu 18.04 distribution, with the latest Nvidia Jetpack installed based on a ROS Noetic deployment. If you don't have such a distribution installed, please complete the [Jetson Nano Ubuntu 18.04 Full Install](jetson-nano-ubuntu-18-04-install.md) and the [ROS Noetic Install on Jetson Nano with Ubuntu 18.04 (python3.6)](jetson-nano-ros-noetic-ubuntu-18-04-install.md) tutorials.
+In this tutorial I will describe the steps needed to fully install the Realsense D435i on the official Jetson Nano Ubuntu 18.04 distribution and Ubuntu 20.04 , with the latest Nvidia Jetpack installed based on a ROS Noetic deployment. If you don't have such a distribution installed, please complete either the [Jetson Nano Ubuntu 18.04 Full Install](jetson-nano-ubuntu-18-04-install.md) or the [Ubuntu 20.04 Install Through Distribution Upgrade](jetson-nano-ubuntu-20-04-install.md), and the [ROS Noetic Install on Jetson Nano for Ubuntu 18.04 and Ubuntu 20.04](jetson-nano-ros-noetic-install.md) tutorials.
 
 The tutorial assumes that the aforementioned installs are done, while it details the steps to properly install [librealsense](https://github.com/IntelRealSense/librealsense), [realsense-ros warpper](https://github.com/IntelRealSense/realsense-ros/tree/ros1-legacy) and the corresponding [realsense firmare](https://dev.intelrealsense.com/docs/firmware-releases).
+
+All the steps described in this tutorial are exactly the same for both Ubuntu 18.04 and Ubuntu 20.04.
 
 Please note that the ROS Realsense warpper 2.3.2 that is compatible with ROS Noetic [2] requires librealsense version 2.50.0 [7]. While the recommaned Realsense D435i Ffirmware version is 5.13.0.50 [3].
 

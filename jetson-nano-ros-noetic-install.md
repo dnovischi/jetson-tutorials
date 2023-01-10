@@ -1,8 +1,10 @@
-# ROS Noetic Install on Jetson Nano with Ubuntu 18.04 (python3.6)
+# ROS Noetic Install on Jetson Nano for Ubuntu 18.04 and Ubuntu 20.04
 
-The goal of this guide is to compile and install a fully working version of [ROS Noetic](http://wiki.ros.org/noetic) on the official Jetson Nano Ubuntu 18.04 distribution with native python 3.6 support.\
-The guide assumes that a clean and up-to-date Ubuntu 18.04 installation
-was done on the Jetson Nano. The steps for this are discussed in the [Jetson Nano Ubuntu 18.04 Full Install](jetson-nano-ubuntu-18-04-install.md) guide.
+The goal of this guide is to compile and install a fully working version of [ROS Noetic](http://wiki.ros.org/noetic) on both the official Jetson Nano Ubuntu 18.04 with python 3.6 support and Ubuntu 20.04 with python 3.8 support.\
+The steps are the same for both distributions since the installation is done from source. Moreover, the steps should, generally, be the same for all other Jetson boards.\
+It is my opinion that this should be the preferred way of installing ROS1 on Jetson and I had the the most success when doing it this way.
+
+The guide assumes that a clean and up-to-date Ubuntu 18.04 or Ubuntu 20.4 installation was done on the Jetson Nano. The steps for this are discussed in the [Jetson Nano Ubuntu 18.04 Full Install](jetson-nano-ubuntu-18-04-install.md) guide and in the [Ubuntu 20.04 Install Through Distribution Upgrade](jetson-nano-ubuntu-20-04-install.md) respectively.
 
 1. First make sure you have gcc-10 and g++-10 activated:
 
