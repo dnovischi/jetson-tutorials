@@ -15,7 +15,7 @@ To become a contributor your self checkout the [Contributions](#Contributions) s
 
 3. [ROS Noetic Install on Jetson Nano for Ubuntu 18.04 and Ubuntu 20.04](jetson-nano-ros-noetic-install.md)
 
-5. [Realsense D435i Install for ROS Noetic on Ubuntu 18.04](jetson-nano-realsense-notetic-ubuntu-18-04-install.md)
+5. [Realsense D435i Installation for ROS Noetic on Ubuntu 18.04 and Ubuntu 20.04](jetson-nano-realsense-notetic-install.md)
 
 7. [Jetson Nano Wi-Fi USB Dongle Install](jetson-nano-wifi-dongle.md)
 
