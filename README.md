@@ -4,7 +4,9 @@ Wellcome to [Jetson Tutorials](https://github.com/dnovischi/jetson-tutorials/tre
 
 The author and contributors are not affiliated in any shape or form with Nvidia.
 
-To become a contributor your self checkout the [Contributions](#Contributions) section below.
+To become a contributor yourself checkout the [Contributions](#Contributions) section below.
+
+If you like what you find here, please star the project to make it more visible and stay informed about other tutorials I'll create.
 
 ## Contents
 ### Jetson Nano
