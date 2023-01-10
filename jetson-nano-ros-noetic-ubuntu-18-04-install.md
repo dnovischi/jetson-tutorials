@@ -24,7 +24,7 @@ curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo ap
 
 sudo apt-get update
 
-sudo apt-get install python3-catkin-pkg python3-rosdistro python3-rosinstall-generator python3-rospkg python3-vcstools python3-vcstool
+sudo apt-get install python3-catkin-pkg python3-rosdistro python3-rosinstall-generator python3-rospkg python3-vcstools python3-vcstool python3-rosdep
 ```
 
 3. Initialize ROS dependency manager tool:
