@@ -240,41 +240,108 @@ cd ~/catkin_ws/src/realsense-ros/
 git checkout tags/2.3.2 -b 2.3.2
 ```
 
-10. Navigate to the catkin workspace source folder:
+10. Unfortunately, we have to update the `CMakeList.txt` File of the Ros wrapper. First, navigate to the file location using
+```bash
+cd realsense2_camera
+```
+Then, open the file using
+```bash
+nano CMakeLists.txt
+```
+
+11. In the file change
+```
+find_package(catkin REQUIRED COMPONENTS
+    message_generation
+    nav_msgs
+    roscpp
+    sensor_msgs
+    std_msgs
+    std_srvs
+    nodelet
+    cv_bridge
+    image_transport
+    tf
+    ddynamic_reconfigure
+    diagnostic_updater
+    )
+```
+to (add `OpenCV REQUIRED`)
+```
+find_package(catkin REQUIRED COMPONENTS
+    message_generation
+    nav_msgs
+    roscpp
+    sensor_msgs
+    std_msgs
+    std_srvs
+    nodelet
+    cv_bridge
+    image_transport
+    tf
+    ddynamic_reconfigure
+    diagnostic_updater
+    OpenCV REQUIRED
+    )
+```
+
+12. Then, add `${OpenCV_INCLUDE_DIRS}` to
+```
+include_directories(
+    include
+    ${realsense2_INCLUDE_DIR}
+    ${catkin_INCLUDE_DIRS}
+    ${OpenCV_INCLUDE_DIRS}
+    )
+```
+13. Add `${OpenCV_LIBRARIES}` to
+```
+target_link_libraries(${PROJECT_NAME}
+    ${realsense2_LIBRARY}
+    ${catkin_LIBRARIES}
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${OpenCV_LIBRARIES}
+    )
+```
+
+14. Close the editor by pressing `Crtl + X`, press `y + Enter` to save the file and `Enter` again to save it under the same name.
+
+
+15. Navigate to the catkin workspace source folder:
 
 ```bash
 cd ~/catkin_ws/src
 ```
-11. Initialize the catkin workspace:
+16. Initialize the catkin workspace:
 
 ```bash
 catkin_init_workspace
 ```
-12. Navigate to the catkin workspace:
+17. Navigate to the catkin workspace:
 
 ```bash
 cd ~/catkin_ws/
 ```
 
-13. Clean the workspace to see if anything is missing before the build:
+18. Clean the workspace to see if anything is missing before the build:
 
 ```bash
 catkin_make clean
 ```
 
-14. Build the packages in the catkin workspace:
+19. Build the packages in the catkin workspace:
 
 ```bash
 catkin_make -DCATKIN_ENABLE_TESTING=False -DCMAKE_BUILD_TYPE=Release
 ```
 
-15. Install the packages:
+20. Install the packages:
 
 ```bash
 catkin_make install
 ```
 
-16. Optionally add the catking workspace to `bashrc` such that it will be sourced on every loggin:
+21. Optionally add the catking workspace to `bashrc` such that it will be sourced on every loggin:
 
 ```bash
 echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
