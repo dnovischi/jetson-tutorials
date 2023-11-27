@@ -240,7 +240,7 @@ cd ~/catkin_ws/src/realsense-ros/
 git checkout tags/2.3.2 -b 2.3.2
 ```
 
-10. Unfortunately, we have to update the `CMakeList.txt` File of the Ros wrapper. First, navigate to the file location using
+10. Unfortunately, we have to update the `CMakeList.txt` file of the realsense-ros wrapper. First, navigate to the file location using
 ```bash
 cd realsense2_camera
 ```
@@ -266,7 +266,7 @@ find_package(catkin REQUIRED COMPONENTS
     diagnostic_updater
     )
 ```
-to (add `OpenCV REQUIRED`)
+to (by adding `OpenCV REQUIRED`)
 ```
 find_package(catkin REQUIRED COMPONENTS
     message_generation
