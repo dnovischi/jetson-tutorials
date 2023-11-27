@@ -1,12 +1,12 @@
-# Realsense D435i Installation for ROS Noetic on Ubuntu 18.04 and Ubuntu 20.04
+# Realsense D435i and D400 Series Installation for ROS Noetic on Ubuntu 18.04 and Ubuntu 20.04
 
 In this tutorial I will describe the steps needed to fully install the Realsense D435i on the official Jetson Nano Ubuntu 18.04 distribution and Ubuntu 20.04 , with the latest Nvidia Jetpack installed based on a ROS Noetic deployment. If you don't have such a distribution installed, please complete either the [Jetson Nano Ubuntu 18.04 Full Install](jetson-nano-ubuntu-18-04-install.md) or the [Ubuntu 20.04 Install Through Distribution Upgrade](jetson-nano-ubuntu-20-04-install.md), and the [ROS Noetic Install on Jetson Nano for Ubuntu 18.04 and Ubuntu 20.04](jetson-nano-ros-noetic-install.md) tutorials.
 
-The tutorial assumes that the aforementioned installs are done, while it details the steps to properly install [librealsense](https://github.com/IntelRealSense/librealsense), [realsense-ros warpper](https://github.com/IntelRealSense/realsense-ros/tree/ros1-legacy) and the corresponding [realsense firmare](https://dev.intelrealsense.com/docs/firmware-releases).
+The tutorial assumes that the aforementioned installs are done, while it details the steps to properly install [librealsense](https://github.com/IntelRealSense/librealsense), [realsense-ros wrapper](https://github.com/IntelRealSense/realsense-ros/tree/ros1-legacy) and the corresponding [realsense firmare](https://dev.intelrealsense.com/docs/firmware-releases).
 
 All the steps described in this tutorial are exactly the same for both Ubuntu 18.04 and Ubuntu 20.04.
 
-Please note that the ROS Realsense warpper 2.3.2 that is compatible with ROS Noetic [2] requires librealsense version 2.50.0 [7]. While the recommaned Realsense D435i Ffirmware version is 5.13.0.50 [3].
+Please note that the ROS Realsense wrapper 2.3.2 that is compatible with ROS Noetic [2] requires librealsense version 2.50.0 [7]. While the recommaned Realsense D435i Ffirmware version is 5.13.0.50 [3].
 
 ## Librealsense Installation
 
@@ -92,7 +92,7 @@ unzip v2.50.0.zip
 cd librealsense-2.50.0
 ```
 
-7. You can try to run the L4T patch script, but it will fail since the latest jetpack is not supported. No worries, it will still work fine, aside from a warining in ROS from the realsense-ros warpper:
+7. You can try to run the L4T patch script, but it will fail since the latest jetpack is not supported. No worries, it will still work fine, aside from a warining in ROS from the realsense-ros wrapper:
 
 ```bash
 ./scripts/patch-realsense-ubuntu-L4T.sh
@@ -142,7 +142,7 @@ mkdir build && cd build
 cmake .. -DBUILD_EXAMPLES=true -DCMAKE_BUILD_TYPE=release -DFORCE_RSUSB_BACKEND=false -DBUILD_WITH_CUDA=true && make -j$(($(nproc)-1)) && sudo make install
 ```
 
-## Realsense ROS Warpper Install
+## Realsense ROS Wrapper Install
 
 1. Make sure your Jetson is up to date
 
@@ -151,7 +151,7 @@ sudo apt-get update
 sudo apt-get upgrade
 ```
 
-2. Will be using gcc and g ++ version 10 to build the realsense-ros warpper. If your followed [Jetson Nano Ubuntu 18.04 Full Install](ubuntu-18-04-install.md) you can simply select them by:
+2. Will be using gcc and g ++ version 10 to build the realsense-ros wrapper. If your followed [Jetson Nano Ubuntu 18.04 Full Install](ubuntu-18-04-install.md) you can simply select them by:
 
 ```bash
 sudo update-alternatives --config gcc
@@ -190,6 +190,13 @@ There are 4 choices for the alternative g++ (providing /usr/bin/g++).
 Press <enter> to keep the current choice[*], or type selection number: 1
 ```
 
+Otherwise, you first have to execute the following commands one after the other
+```bash
+sudo apt install gcc-10 g++-10
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 30
+sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 30
+```
+
 3. Create a catkin workspace and navigate into the source folder:
 
 ```bash
@@ -209,7 +216,7 @@ git clone https://github.com/IntelRealSense/realsense-ros.git
 git clone https://github.com/pal-robotics/ddynamic_reconfigure.git
 ```
 
-6. We also need the `image_transport_plugins` to have the compressed streams available for the warpper. So, clone the `noetic-devel` branch from `ros-perception/image_transport_plugins`:
+6. We also need the `image_transport_plugins` to have the compressed streams available for the wrapper. So, clone the `noetic-devel` branch from `ros-perception/image_transport_plugins`:
 
 ```bash
  git clone -b noetic-devel https://github.com/ros-perception/image_transport_plugins.git
@@ -233,48 +240,115 @@ cd ~/catkin_ws/src/realsense-ros/
 git checkout tags/2.3.2 -b 2.3.2
 ```
 
-10. Navigate to the catkin workspace source folder:
+10. Unfortunately, we have to update the `CMakeList.txt` file of the realsense-ros wrapper. First, navigate to the file location using
+```bash
+cd realsense2_camera
+```
+Then, open the file using
+```bash
+nano CMakeLists.txt
+```
+
+11. In the file change
+```
+find_package(catkin REQUIRED COMPONENTS
+    message_generation
+    nav_msgs
+    roscpp
+    sensor_msgs
+    std_msgs
+    std_srvs
+    nodelet
+    cv_bridge
+    image_transport
+    tf
+    ddynamic_reconfigure
+    diagnostic_updater
+    )
+```
+to (by adding `OpenCV REQUIRED`)
+```
+find_package(catkin REQUIRED COMPONENTS
+    message_generation
+    nav_msgs
+    roscpp
+    sensor_msgs
+    std_msgs
+    std_srvs
+    nodelet
+    cv_bridge
+    image_transport
+    tf
+    ddynamic_reconfigure
+    diagnostic_updater
+    OpenCV REQUIRED
+    )
+```
+
+12. Then, add `${OpenCV_INCLUDE_DIRS}` to
+```
+include_directories(
+    include
+    ${realsense2_INCLUDE_DIR}
+    ${catkin_INCLUDE_DIRS}
+    ${OpenCV_INCLUDE_DIRS}
+    )
+```
+13. Add `${OpenCV_LIBRARIES}` to
+```
+target_link_libraries(${PROJECT_NAME}
+    ${realsense2_LIBRARY}
+    ${catkin_LIBRARIES}
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${OpenCV_LIBRARIES}
+    )
+```
+
+14. Close the editor by pressing `Crtl + X`, press `y + Enter` to save the file and `Enter` again to save it under the same name.
+
+
+15. Navigate to the catkin workspace source folder:
 
 ```bash
 cd ~/catkin_ws/src
 ```
-11. Initialize the catkin workspace:
+16. Initialize the catkin workspace:
 
 ```bash
 catkin_init_workspace
 ```
-12. Navigate to the catkin workspace:
+17. Navigate to the catkin workspace:
 
 ```bash
 cd ~/catkin_ws/
 ```
 
-13. Clean the workspace to see if anything is missing before the build:
+18. Clean the workspace to see if anything is missing before the build:
 
 ```bash
 catkin_make clean
 ```
 
-14. Build the packages in the catkin workspace:
+19. Build the packages in the catkin workspace:
 
 ```bash
 catkin_make -DCATKIN_ENABLE_TESTING=False -DCMAKE_BUILD_TYPE=Release
 ```
 
-15. Install the packages:
+20. Install the packages:
 
 ```bash
 catkin_make install
 ```
 
-16. Optionally add the catking workspace to `bashrc` such that it will be sourced on every loggin:
+21. Optionally add the catking workspace to `bashrc` such that it will be sourced on every loggin:
 
 ```bash
 echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 ```
 
-## Realsense Firmware Install
+## Realsense Firmware Install (on a x86 PC!)
 1. Make sure you have PC (x86_64) with Ubuntu 20.04 and Realsense properly installed.
 2. Download the on the PC, the Realsense Firmware 5.13.0.50 for librealsense SDK 2.50.0 (see [3] for more details):
 ```bash
@@ -297,7 +371,7 @@ realsense-viewer
 11. Let the process finish, then your done here.
 
 
-## Run Realsense ROS Warpper
+## Run Realsense ROS Wrapper
 
 1. If the all the steps above succeded, plug-in the Realsense into an USB 3.2 port of the Jetson Nano.
 The `dmesg` command should output something similar to:
@@ -327,7 +401,7 @@ The `dmesg` command should output something similar to:
 [23725.152760] hid-sensor-hub 0003:8086:0B3A.0003: No report with id 0xffffffff found
 ```
 
-2. Launch the realsense-ros warpper with the following arguments:
+2. Launch the realsense-ros wrapper with the following arguments:
 
 ```bash
 roslaunch realsense2_camera rs_camera.launch depth_width:=424 depth_height:=240 depth_fps:=15 color_width:=320 color_height:=180 color_fps:=30 infra_width:=424 infra_height:=240 infra_fps:=15 filters:=pointcloud enable_infra1:=True enable_infra2:=True enable_gyro:=True enable_accel:=True align_depth:=True enable_sync:=True
@@ -611,7 +685,7 @@ is due to the lack of a kernel patch.
 
 ## Realsense ROS Stream Resolution Configuration Options
 
-To provide the configuration options when you launch the realsense warpper the argument format is as follows:
+To provide the configuration options when you launch the realsense wrapper the argument format is as follows:
 
 ```bash
 roslaunch realsense2_camera rs_camera.launch <stream-name>_width:=option <stream-name>_height:=option <stream-name>_fps:=option
@@ -928,7 +1002,7 @@ Color 320x180 @ 6Hz YUYV
 ```
 
 ## Notes
-1. At this time for jetpacks above 4.4.1 there is no librealsense linux kernel patch. While the realsense will function as expected, you may receive some warnings when luanching the realsense ros warpper node.
+1. At this time for jetpacks above 4.4.1 there is no librealsense linux kernel patch. While the realsense will function as expected, you may receive some warnings when luanching the realsense ros wrapper node.
 2. gcc, g++, clang version 8 and 9 contain a bug regarnding aarch64 architectures, see [8-10] for more details.
 
 ## References
